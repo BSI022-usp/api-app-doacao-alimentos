@@ -10,26 +10,26 @@ import {
 import { MarcasService } from './marcas.service';
 import { CreateMarcaDto } from './dto/create-marca.dto';
 import { UpdateMarcaDto } from './dto/update-marca.dto';
-import { Marcas } from './entities/marca.entity';
+import { MarcasNew } from './entities/marca.entity';
 
 @Controller('marcas')
 export class MarcasController {
   constructor(private readonly marcasService: MarcasService) {}
 
-  // @Post()
-  // create(@Body() createMarcaDto: CreateMarcaDto) {
-  //   return this.marcasService.create(createMarcaDto);
-  // }
+  @Post()
+  create(@Body() createMarcaDto: CreateMarcaDto) {
+    return this.marcasService.create(createMarcaDto);
+  }
 
   @Get()
-  async findAll(): Promise<Marcas[]> {
+  async findAll(): Promise<MarcasNew[]> {
     const marcas = await this.marcasService.findAll();
     return marcas;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.marcasService.findById(+id);
+  @Get(':nome')
+  findOne(@Param('nome') nome: string) {
+    return this.marcasService.findMarcaByName(nome);
   }
 
   // @Patch(':id')

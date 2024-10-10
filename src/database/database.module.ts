@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Marcas } from 'src/marcas/entities/marca.entity';
 
 @Module({
   imports: [
@@ -10,14 +9,15 @@ import { Marcas } from 'src/marcas/entities/marca.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get('POSTGRES_PORT'),
-        username: configService.get('POSTGRES_USER'),
-        password: configService.get('POSTGRES_PASSWORD'),
-        database: configService.get('POSTGRES_DB'),
+        host: configService.get('NEON_POSTGRES_HOST'),
+        port: configService.get('NEON_POSTGRES_PORT'),
+        username: configService.get('NEON_POSTGRES_USER'),
+        password: configService.get('NEON_POSTGRES_PASSWORD'),
+        database: configService.get('NEON_POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        ssl: true,
         // entities: [Marcas],
-        synchronize: true, // Be cautious about using synchronize in production
+        // synchronize: true, // Be cautious about using synchronize in production
       }),
       inject: [ConfigService],
     }),
