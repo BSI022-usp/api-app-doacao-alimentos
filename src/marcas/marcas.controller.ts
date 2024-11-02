@@ -6,11 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
-import { MarcasService } from './marcas.service';
-import { CreateMarcaDto } from './dto/create-marca.dto';
-import { UpdateMarcaDto } from './dto/update-marca.dto';
-import { MarcasNew } from './entities/marca.entity';
+} from '@nestjs/common'
+import { MarcasService } from './marcas.service'
+import { CreateMarcaDto } from './dto/create-marca.dto'
+import { UpdateMarcaDto } from './dto/update-marca.dto'
+import { MarcasNew } from './entities/marca.entity'
 
 @Controller('marcas')
 export class MarcasController {
@@ -18,18 +18,18 @@ export class MarcasController {
 
   @Post()
   create(@Body() createMarcaDto: CreateMarcaDto) {
-    return this.marcasService.create(createMarcaDto);
+    return this.marcasService.create(createMarcaDto)
   }
 
   @Get()
   async findAll(): Promise<MarcasNew[]> {
-    const marcas = await this.marcasService.findAll();
-    return marcas;
+    const marcas = await this.marcasService.findAll()
+    return marcas
   }
 
   @Get(':nome')
   findOne(@Param('nome') nome: string) {
-    return this.marcasService.findMarcaByName(nome);
+    return this.marcasService.findMarcaByName(nome)
   }
 
   // @Patch(':id')

@@ -8,19 +8,10 @@ describe('ProdutosController', () => {
   let service: ProdutosService;
   let repository: Repository<ProdutosNew>;
 
-  // beforeEach(async () => {
-  //   const module: TestingModule = await Test.createTestingModule({
-  //     controllers: [ProdutosController],
-  //     providers: [ProdutosService],
-  //   }).compile();
-
-  //   controller = module.get<ProdutosController>(ProdutosController);
-  // });
-
   beforeAll(() => {
-    service = new ProdutosService(repository)
-    controller = new ProdutosController(service)
-  })
+    service = new ProdutosService(repository);
+    controller = new ProdutosController(service);
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
