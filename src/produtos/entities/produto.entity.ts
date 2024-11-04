@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Arrecadacao } from '../../arrecadacao/entities/arrecadacao.entity';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class ProdutosNew {
@@ -25,4 +26,7 @@ export class ProdutosNew {
 
   @Column()
   nome_sem_acento: string;
+
+  @OneToMany(() => Arrecadacao, (arrecadacao) => arrecadacao.produto)
+  public arrecadacao: Arrecadacao[];
 }

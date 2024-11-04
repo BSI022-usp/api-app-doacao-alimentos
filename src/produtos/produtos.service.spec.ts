@@ -7,8 +7,8 @@ describe('ProdutosService', () => {
   let repository: Repository<ProdutosNew>;
 
   beforeAll(() => {
-    service = new ProdutosService(repository)
-  })
+    service = new ProdutosService(repository);
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();

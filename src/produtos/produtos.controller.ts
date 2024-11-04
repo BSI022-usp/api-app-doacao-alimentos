@@ -6,10 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
-import { ProdutosService } from './produtos.service';
-import { CreateProdutoDto } from './dto/create-produto.dto';
-import { UpdateProdutoDto } from './dto/update-produto.dto';
+} from '@nestjs/common'
+import { ProdutosService } from './produtos.service'
 
 @Controller('produtos')
 export class ProdutosController {
@@ -27,12 +25,12 @@ export class ProdutosController {
 
   @Get()
   find10Produtos() {
-    return this.produtosService.find10Produtos();
+    return this.produtosService.find10Produtos()
   }
 
   @Get(':gtin')
   findOne(@Param('gtin') gtin: string) {
-    return this.produtosService.findProdutoByCode(gtin);
+    return this.produtosService.findProdutoByCode(gtin)
   }
 
   // @Patch(':id')
