@@ -30,6 +30,12 @@ export class ArrecadacaoController {
     return this.arrecadacaoService.findOne(+id)
   }
 
+  //rota que retorna todas as arrecadacoes de uma campanha
+  //@Get('campanha/:idCampanha')
+  //arrecadacoesPorCampanha(@Param('idCampanha') id: string) {
+  //  return this.arrecadacaoService.arrecadacoesPorCampanha(+id)
+  //}
+
   @Patch(':id')
   update(
     @Param('id') id: string,

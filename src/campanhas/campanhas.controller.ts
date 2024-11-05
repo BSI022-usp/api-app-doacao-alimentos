@@ -8,10 +8,14 @@ import {
   Delete,
 } from '@nestjs/common'
 import { CampanhasService } from './campanhas.service'
+import { ArrecadacaoService } from '../arrecadacao/arrecadacao.service';
 
 @Controller('campanhas')
 export class CampanhasController {
-  constructor(private readonly campanhasService: CampanhasService) {}
+  constructor(
+    private readonly campanhasService: CampanhasService,
+    private readonly arrecadacaoService: ArrecadacaoService,
+  ) {}
 
   // @Post()
   // create(@Body() createCampanhaDto: CreateCampanhaDto) {
@@ -19,8 +23,17 @@ export class CampanhasController {
   // }
 
   @Get()
-  findAll() {
-    return this.campanhasService.findAll()
+  async findAll() {
+    const campanhas = await this.campanhasService.findAll();
+
+    const campanhasComArrecadacoes = await Promise.all(
+      campanhas.map(async (campanha) => {
+        const arrecadacoes = await this.arrecadacaoService.arrecadacoesPorCampanha(campanha.id);
+        return { ...campanha, arrecadacoes };
+      }),
+    );
+
+    return campanhasComArrecadacoes;
   }
 
   @Get(':id')
@@ -37,4 +50,6 @@ export class CampanhasController {
   remove(@Param('id') id: string) {
     return this.campanhasService.remove(+id)
   }
+
+  
 }

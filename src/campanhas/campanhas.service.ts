@@ -16,8 +16,9 @@ export class CampanhasService {
     return 'This action adds a new campanha';
   }
 
+  //pegar todas as campanhas 
   async findAll() {
-    return await this.campanhaRepository.find({ take: 10 });
+    return await this.campanhaRepository.find();
   }
 
   findOne(id: number) {
@@ -31,4 +32,5 @@ export class CampanhasService {
   remove(id: number) {
     return `This action removes a #${id} campanha`;
   }
+
 }
