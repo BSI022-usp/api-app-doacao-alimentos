@@ -1,19 +1,32 @@
-import { ProdutosController } from './produtos.controller';
-import { ProdutosService } from './produtos.service';
-import { Repository } from 'typeorm';
-import { ProdutosNew } from './entities/produto.entity';
+import { ProdutosController } from './produtos.controller'
+import { ProdutosService } from './produtos.service'
+import { Repository } from 'typeorm'
+import { ProdutosNew } from './entities/produto.entity'
 
 describe('ProdutosController', () => {
-  let controller: ProdutosController;
-  let service: ProdutosService;
-  let repository: Repository<ProdutosNew>;
+  let controller: ProdutosController
+  let service: ProdutosService
+  let repository: Repository<ProdutosNew>
 
   beforeAll(() => {
-    service = new ProdutosService(repository);
-    controller = new ProdutosController(service);
-  });
+    repository = {} as Repository<ProdutosNew>
+    service = new ProdutosService(repository)
+    controller = new ProdutosController(service)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+
+  it('find all products - should return all products', async () => {
+    const produtosMock: ProdutosNew[] = [
+      { id: 1, nome: 'Produto 1', preco: 100 } as unknown as ProdutosNew,
+      { id: 2, nome: 'Produto 2', preco: 200 } as unknown as ProdutosNew,
+    ]
+
+    jest.spyOn(service, 'findAllProducts').mockResolvedValue(produtosMock)
+
+    const result = await controller.findAllProducts()
+    expect(result).toEqual(produtosMock)
+  })
+})
