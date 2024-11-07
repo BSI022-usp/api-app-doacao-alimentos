@@ -31,6 +31,12 @@ const mockRepository = {
       ])
     )
     .mockReturnValueOnce(Promise.resolve([{}])),
+  find: jest
+    .fn()
+    .mockReturnValueOnce(
+      Promise.resolve([{ nome: 'comida', id_produto_categoria: 'teste' }])
+    )
+    .mockReturnValueOnce(Promise.resolve([{}])),
 }
 
 describe('ProdutosService', () => {
@@ -65,6 +71,20 @@ describe('ProdutosService', () => {
 
   it('Find All Products - should get empty result if has no products in database', async () => {
     const result = await service.findAllProducts()
+    expect(result).toStrictEqual([{}])
+  })
+
+  it('Find Products By Category - should get a list of products with one category', async () => {
+    const result = await service.findProductsByCategory('teste')
+
+    expect(result).toBeInstanceOf(Array)
+    expect(result[0].id_produto_categoria).toBe('teste')
+  })
+
+  it('Find Products By Category - should get empty result if has no products with category in database', async () => {
+    const result = await service.findProductsByCategory('teste')
+
+    expect(result).toBeInstanceOf(Array)
     expect(result).toStrictEqual([{}])
   })
 })

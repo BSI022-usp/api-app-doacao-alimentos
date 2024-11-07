@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ProdutosNew } from './entities/produto.entity';
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { ProdutosNew } from './entities/produto.entity'
 
 @Injectable()
 export class ProdutosService {
   constructor(
     @InjectRepository(ProdutosNew)
-    private produtoRepository: Repository<ProdutosNew>,
+    private produtoRepository: Repository<ProdutosNew>
   ) {}
 
   // create(createProdutoDto: CreateProdutoDto) {
@@ -15,11 +15,19 @@ export class ProdutosService {
   // }
 
   async findAllProducts() {
-    return await this.produtoRepository.query('SELECT * FROM PRODUTOS_NEW');
+    return await this.produtoRepository.query('SELECT * FROM PRODUTOS_NEW')
   }
 
   async findProdutoByCode(gtin: string) {
-    return await this.produtoRepository.findOneBy({ gtin });
+    return await this.produtoRepository.findOneBy({ gtin })
+  }
+
+  async findProductsByCategory(category: string) {
+    return await this.produtoRepository.find({
+      where: {
+        id_produto_categoria: category,
+      },
+    })
   }
 
   // update(id: number, updateProdutoDto: UpdateProdutoDto) {
