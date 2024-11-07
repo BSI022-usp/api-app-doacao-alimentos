@@ -36,9 +36,9 @@ export class CampanhasController {
     return campanhasComArrecadacoes;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.campanhasService.findOne(+id)
+  @Get(':idCampanha')
+  findOne(@Param('idCampanha') id: string) {
+    return this.arrecadacaoService.arrecadacoesPorCampanha(+id);
   }
 
   // @Patch(':id')
