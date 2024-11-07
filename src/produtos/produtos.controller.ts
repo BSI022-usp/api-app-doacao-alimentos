@@ -1,13 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { ProdutosService } from './produtos.service';
+import { Controller, Get, Param } from '@nestjs/common'
+import { ProdutosService } from './produtos.service'
 
 @Controller('produtos')
 export class ProdutosController {
@@ -18,19 +10,19 @@ export class ProdutosController {
   //   return this.produtosService.create(createProdutoDto);
   // }
 
-  // @Get()
-  // findAll() {
-  //   return this.produtosService.findAll();
-  // }
-
   @Get()
   findAllProducts() {
-    return this.produtosService.findAllProducts();
+    return this.produtosService.findAllProducts()
   }
 
   @Get(':gtin')
   findOne(@Param('gtin') gtin: string) {
-    return this.produtosService.findProdutoByCode(gtin);
+    return this.produtosService.findProdutoByCode(gtin)
+  }
+
+  @Get('/categorias/:category')
+  findByCategory(@Param('category') category: string) {
+    return this.produtosService.findProductsByCategory(category)
   }
 
   // @Patch(':id')

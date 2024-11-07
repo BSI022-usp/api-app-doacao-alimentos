@@ -20,13 +20,35 @@ describe('ProdutosController', () => {
 
   it('find all products - should return all products', async () => {
     const produtosMock: ProdutosNew[] = [
-      { id: 1, nome: 'Produto 1', preco: 100 } as unknown as ProdutosNew,
-      { id: 2, nome: 'Produto 2', preco: 200 } as unknown as ProdutosNew,
+      { id: 1, nome: 'Produto 1' } as unknown as ProdutosNew,
+      { id: 2, nome: 'Produto 2' } as unknown as ProdutosNew,
     ]
 
     jest.spyOn(service, 'findAllProducts').mockResolvedValue(produtosMock)
 
     const result = await controller.findAllProducts()
+    expect(result).toEqual(produtosMock)
+  })
+
+  it('find products by category - should return all products filter by category', async () => {
+    const produtosMock: ProdutosNew[] = [
+      {
+        id: 1,
+        nome: 'Produto 1',
+        id_produto_categoria: 'teste',
+      } as unknown as ProdutosNew,
+      {
+        id: 2,
+        nome: 'Produto 2',
+        id_produto_categoria: 'teste',
+      } as unknown as ProdutosNew,
+    ]
+
+    jest
+      .spyOn(service, 'findProductsByCategory')
+      .mockResolvedValue(produtosMock)
+
+    const result = await controller.findByCategory('teste')
     expect(result).toEqual(produtosMock)
   })
 })
