@@ -5,7 +5,31 @@ import { Repository } from 'typeorm/repository/Repository'
 const mockRepository = {
   query: jest
     .fn()
-    .mockReturnValueOnce(Promise.resolve([{ categoria: 'Arroz' }]))
+    .mockReturnValueOnce(
+      Promise.resolve([
+        {
+          gtin: '7891167021105',
+          id_produto_categoria: 'Arroz',
+          codigo_ncm: '03035300',
+          medida_por_embalagem: null,
+          produto_medida_sigla: null,
+          produto_marca: 'NÃO INFORMADO',
+          nome: 'Sardinha Com Ã“leo Defumado Gomes Da Costa Lata 84g',
+          nome_sem_acento: 'Sardinha Com oleo Defumado Gomes Da Costa Lata 84g',
+        },
+        {
+          gtin: '7891167099432',
+          id_produto_categoria: null,
+          codigo_ncm: '03035300',
+          medida_por_embalagem: null,
+          produto_medida_sigla: null,
+          produto_marca: 'NÃO INFORMADO',
+          nome: 'Sardinha Com Ã“leo Gomes Da Costa Lata 420g Leve 5 Pague 4 Unidades',
+          nome_sem_acento:
+            'Sardinha Com oleo Gomes Da Costa Lata 420g Leve 5 Pague 4 Unidades',
+        },
+      ])
+    )
     .mockReturnValueOnce(Promise.resolve([{}])),
 }
 
@@ -25,7 +49,18 @@ describe('ProdutosService', () => {
   it('Find All Products - should get a list of products', async () => {
     const result = await service.findAllProducts()
     expect(result).toBeInstanceOf(Array)
-    expect(result[0].categoria).toBe('Arroz')
+    expect(result[0].id_produto_categoria).toBe('Arroz')
+    expect(result[0].codigo_ncm).toBe('03035300')
+    expect(result[0].gtin).toBe('7891167021105')
+    expect(result[0].nome_sem_acento).toBe(
+      'Sardinha Com oleo Defumado Gomes Da Costa Lata 84g'
+    )
+    expect(result[1].id_produto_categoria).toBe(null)
+    expect(result[1].codigo_ncm).toBe('03035300')
+    expect(result[1].gtin).toBe('7891167099432')
+    expect(result[1].nome_sem_acento).toBe(
+      'Sardinha Com oleo Gomes Da Costa Lata 420g Leve 5 Pague 4 Unidades'
+    )
   })
 
   it('Find All Products - should get empty result if has no products in database', async () => {
