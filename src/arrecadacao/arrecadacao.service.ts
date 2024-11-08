@@ -31,4 +31,9 @@ export class ArrecadacaoService {
   remove(id: number) {
     return `This action removes a #${id} arrecadacao`;
   }
+
+  //pega todas as arrecadações de uma determinada campanha
+  async arrecadacoesPorCampanha(idCampanha: number){
+    return this.arrecadacaoRepository.findBy({id_campanha: idCampanha})
+  }
 }
