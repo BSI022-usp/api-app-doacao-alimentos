@@ -20,8 +20,27 @@ describe('ProdutosController', () => {
 
   it('find all products - should return all products', async () => {
     const produtosMock: ProdutosNew[] = [
-      { id: 1, nome: 'Produto 1' } as unknown as ProdutosNew,
-      { id: 2, nome: 'Produto 2' } as unknown as ProdutosNew,
+      {
+        gtin: '7891167021105',
+        id_produto_categoria: 'Arroz',
+        codigo_ncm: '03035300',
+        medida_por_embalagem: null,
+        produto_medida_sigla: null,
+        produto_marca: 'NÃO INFORMADO',
+        nome: 'Sardinha Com Ã“leo Defumado Gomes Da Costa Lata 84g',
+        nome_sem_acento: 'Sardinha Com oleo Defumado Gomes Da Costa Lata 84g',
+      } as unknown as ProdutosNew,
+      {
+        gtin: '7891167099432',
+        id_produto_categoria: null,
+        codigo_ncm: '03035300',
+        medida_por_embalagem: null,
+        produto_medida_sigla: null,
+        produto_marca: 'NÃO INFORMADO',
+        nome: 'Sardinha Com Ã“leo Gomes Da Costa Lata 420g Leve 5 Pague 4 Unidades',
+        nome_sem_acento:
+          'Sardinha Com oleo Gomes Da Costa Lata 420g Leve 5 Pague 4 Unidades',
+      } as unknown as ProdutosNew,
     ]
 
     jest.spyOn(service, 'findAllProducts').mockResolvedValue(produtosMock)
