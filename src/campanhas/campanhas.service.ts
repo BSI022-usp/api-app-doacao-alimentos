@@ -12,10 +12,10 @@ export class CampanhasService {
     private campanhaRepository: Repository<Campanhas>,
   ) {}
 
-  create(createCampanhaDto: CreateCampanhaDto) {
-    return 'This action adds a new campanha';
-  }
-
+  async create(createCampanhaDto: CreateCampanhaDto): Promise<Campanhas> {
+    const newCampanha = this.campanhaRepository.create(createCampanhaDto);
+    return await this.campanhaRepository.save(newCampanha);
+}
   //pegar todas as campanhas 
   async findAll() {
     return await this.campanhaRepository.find();

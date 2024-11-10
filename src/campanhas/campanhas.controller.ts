@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common'
 import { CampanhasService } from './campanhas.service'
 import { ArrecadacaoService } from '../arrecadacao/arrecadacao.service';
+import { CreateCampanhaDto } from './dto/create-campanha.dto';
 
 @Controller('campanhas')
 export class CampanhasController {
@@ -17,10 +18,10 @@ export class CampanhasController {
     private readonly arrecadacaoService: ArrecadacaoService,
   ) {}
 
-  // @Post()
-  // create(@Body() createCampanhaDto: CreateCampanhaDto) {
-  //   return this.campanhasService.create(createCampanhaDto);
-  // }
+  @Post('criarNovaCampanha')
+  create(@Body() createCampanhaDto: CreateCampanhaDto) {
+    return this.campanhasService.create(createCampanhaDto);
+  }
 
   @Get()
   async findAll() {
