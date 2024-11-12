@@ -18,7 +18,7 @@ export class CampanhasController {
     private readonly arrecadacaoService: ArrecadacaoService,
   ) {}
 
-  @Post('criarNovaCampanha')
+  @Post('')
   create(@Body() createCampanhaDto: CreateCampanhaDto) {
     return this.campanhasService.create(createCampanhaDto);
   }

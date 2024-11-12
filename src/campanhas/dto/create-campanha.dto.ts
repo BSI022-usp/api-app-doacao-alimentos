@@ -1,5 +1,5 @@
 export class CreateCampanhaDto {
-    label: string;
-    data_inicio: Date;
-    data_fim: Date;
-  }
+  label: string;
+  data_inicio: Date;
+  data_fim: Date | null;
+}
