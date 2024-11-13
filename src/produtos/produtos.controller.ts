@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ProdutosService } from './produtos.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
+import { ProdutosNew } from './entities/produto.entity';
 
 @Controller('produtos')
 export class ProdutosController {
@@ -17,8 +25,11 @@ export class ProdutosController {
   }
 
   @Get(':gtin')
-  findOne(@Param('gtin') gtin: string) {
-    return this.produtosService.findProdutoByCode(gtin);
+  async findOne(@Param('gtin') gtin: string) {
+    const response = await this.produtosService.findProdutoByCode(gtin);
+
+    if (!response) throw new NotFoundException('Produto não encontrado');
+    else return response;
   }
 
   @Get('/categorias/:category')
