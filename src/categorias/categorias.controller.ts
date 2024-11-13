@@ -22,7 +22,6 @@ export class CategoriasController {
 
   @Get()
   findAll() {
-    console.log('Get Categorias');
     return this.categoriasService.findAll();
   }
 
