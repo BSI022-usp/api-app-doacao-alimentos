@@ -6,10 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-} from '@nestjs/common'
-import { ArrecadacaoService } from './arrecadacao.service'
-import { CreateArrecadacaoDto } from './dto/create-arrecadacao.dto'
-import { UpdateArrecadacaoDto } from './dto/update-arrecadacao.dto'
+} from '@nestjs/common';
+import { ArrecadacaoService } from './arrecadacao.service';
+import { CreateArrecadacaoDto } from './dto/create-arrecadacao.dto';
+import { UpdateArrecadacaoDto } from './dto/update-arrecadacao.dto';
 
 @Controller('arrecadacao')
 export class ArrecadacaoController {
@@ -17,17 +17,17 @@ export class ArrecadacaoController {
 
   @Post()
   create(@Body() createArrecadacaoDto: CreateArrecadacaoDto) {
-    return this.arrecadacaoService.create(createArrecadacaoDto)
+    return this.arrecadacaoService.createOrUpdate(createArrecadacaoDto);
   }
 
   @Get()
   findAll() {
-    return this.arrecadacaoService.findAll()
+    return this.arrecadacaoService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.arrecadacaoService.findOne(+id)
+    return this.arrecadacaoService.findOne(+id);
   }
 
   //rota que retorna todas as arrecadacoes de uma campanha
@@ -39,13 +39,13 @@ export class ArrecadacaoController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateArrecadacaoDto: UpdateArrecadacaoDto
+    @Body() updateArrecadacaoDto: UpdateArrecadacaoDto,
   ) {
-    return this.arrecadacaoService.update(+id, updateArrecadacaoDto)
+    return this.arrecadacaoService.update(+id, updateArrecadacaoDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.arrecadacaoService.remove(+id)
+    return this.arrecadacaoService.remove(+id);
   }
 }
