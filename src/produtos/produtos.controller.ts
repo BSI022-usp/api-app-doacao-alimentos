@@ -1,15 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common'
-import { ProdutosService } from './produtos.service'
+
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ProdutosService } from './produtos.service';
+import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('produtos')
 export class ProdutosController {
   constructor(private readonly produtosService: ProdutosService) {}
 
-  // @Post()
-  // create(@Body() createProdutoDto: CreateProdutoDto) {
-  //   return this.produtosService.create(createProdutoDto);
-  // }
+  @Post()
+  create(@Body() createProdutoDto: CreateProdutoDto) {
+    return this.produtosService.createOrUpdate(createProdutoDto);
+  }
 
   @Get()
   @ApiOperation({
