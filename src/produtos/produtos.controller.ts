@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ProdutosService } from './produtos.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { ApiOperation } from '@nestjs/swagger';
@@ -15,7 +22,8 @@ export class ProdutosController {
   @Get()
   @ApiOperation({
     summary: 'Lista todos os produtos',
-    description: 'Retorna uma lista completa com todos os produtos cadastrados no sistema.',
+    description:
+      'Retorna uma lista completa com todos os produtos cadastrados no sistema.',
   })
   findAllProducts() {
     return this.produtosService.findAllProducts();
@@ -24,7 +32,8 @@ export class ProdutosController {
   @Get(':gtin')
   @ApiOperation({
     summary: 'Busca um produto pelo GTIN',
-    description: 'Procura e retorna os detalhes de um produto específico com base no GTIN (Global Trade Item Number) fornecido como parâmetro.',
+    description:
+      'Procura e retorna os detalhes de um produto específico com base no GTIN (Global Trade Item Number) fornecido como parâmetro.',
   })
   async findOne(@Param('gtin') gtin: string) {
     const response = await this.produtosService.findProdutoByCode(gtin);
@@ -36,7 +45,8 @@ export class ProdutosController {
   @Get('/categorias/:category')
   @ApiOperation({
     summary: 'Busca produtos por categoria',
-    description: 'Retorna uma lista de produtos que pertencem à categoria especificada no parâmetro.',
+    description:
+      'Retorna uma lista de produtos que pertencem à categoria especificada no parâmetro.',
   })
   findByCategory(@Param('category') category: string) {
     return this.produtosService.findProductsByCategory(category);
