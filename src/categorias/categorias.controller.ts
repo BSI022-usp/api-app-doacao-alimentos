@@ -50,7 +50,7 @@ export class CategoriasController {
   })
   update(
     @Param('id') id: string,
-    @Body() updateCategoriaDto: UpdateCategoriaDto
+    @Body() updateCategoriaDto: UpdateCategoriaDto,
   ) {
     return this.categoriasService.update(+id, updateCategoriaDto);
   }

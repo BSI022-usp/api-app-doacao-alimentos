@@ -22,7 +22,7 @@ export class ArrecadacaoController {
     description: 'Recebe os dados de uma arrecadação e a adiciona ao sistema. Os dados devem seguir o formato definido pelo DTO.',
   })
   create(@Body() createArrecadacaoDto: CreateArrecadacaoDto) {
-    return this.arrecadacaoService.create(createArrecadacaoDto);
+    return this.arrecadacaoService.createOrUpdate(createArrecadacaoDto);
   }
 
   @Get()
@@ -59,7 +59,7 @@ export class ArrecadacaoController {
   })
   update(
     @Param('id') id: string,
-    @Body() updateArrecadacaoDto: UpdateArrecadacaoDto
+    @Body() updateArrecadacaoDto: UpdateArrecadacaoDto,
   ) {
     return this.arrecadacaoService.update(+id, updateArrecadacaoDto);
   }

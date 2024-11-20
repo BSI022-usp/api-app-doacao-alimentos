@@ -12,8 +12,17 @@ export class ArrecadacaoService {
     private arrecadacaoRepository: Repository<Arrecadacao>,
   ) {}
 
-  create(createArrecadacaoDto: CreateArrecadacaoDto) {
-    return 'This action adds a new arrecadacao';
+  async createOrUpdate(createArrecadacaoDto: CreateArrecadacaoDto) {
+    const productOnDatabase: Arrecadacao =
+      await this.arrecadacaoRepository.findOneBy({
+        id_campanha: createArrecadacaoDto.id_campanha,
+        id_produto: createArrecadacaoDto.id_produto,
+      });
+
+    if (productOnDatabase)
+      createArrecadacaoDto.qtd_total += productOnDatabase.qtd_total;
+
+    return await this.arrecadacaoRepository.save(createArrecadacaoDto);
   }
 
   async findAll() {
@@ -33,7 +42,7 @@ export class ArrecadacaoService {
   }
 
   //pega todas as arrecadações de uma determinada campanha
-  async arrecadacoesPorCampanha(idCampanha: number){
-    return this.arrecadacaoRepository.findBy({id_campanha: idCampanha})
+  async arrecadacoesPorCampanha(idCampanha: number) {
+    return this.arrecadacaoRepository.findBy({ id_campanha: idCampanha });
   }
 }
