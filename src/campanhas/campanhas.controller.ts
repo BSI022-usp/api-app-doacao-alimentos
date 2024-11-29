@@ -12,6 +12,7 @@ import { ArrecadacaoService } from '../arrecadacao/arrecadacao.service'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
 import { ApiOperation } from '@nestjs/swagger'
 
+// TODO uma arrecadacao só pode ser feita em uma campanha que esteja em andamento
 @Controller('campanhas')
 export class CampanhasController {
   constructor(
