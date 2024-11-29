@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateCampanhaDto {
-  @ApiProperty({example: 'NomeDaCampanha'})
-  label: string;
+  @ApiProperty({ example: 'NomeDaCampanha' })
+  label: string
 
   @ApiProperty()
-  data_inicio: Date;
+  data_inicio: Date
 
   @ApiProperty()
-  data_fim: Date | null;
+  data_fim: Date | null
 }
