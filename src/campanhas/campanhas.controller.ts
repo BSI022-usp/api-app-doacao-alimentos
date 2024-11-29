@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+} from '@nestjs/common'
 import { CampanhasService } from './campanhas.service'
 import { ArrecadacaoService } from '../arrecadacao/arrecadacao.service'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
@@ -19,6 +27,15 @@ export class CampanhasController {
   })
   create(@Body() createCampanhaDto: CreateCampanhaDto) {
     return this.campanhasService.create(createCampanhaDto)
+  }
+
+  @Patch('close/:idCampanha')
+  @ApiOperation({
+    summary: 'Finaliza uma campanha',
+    description: 'Atualiza o campo data_fim de null para a data atual.',
+  })
+  async closeCurrentCampanha(@Param('idCampanha') id: number) {
+    return this.campanhasService.updateDataFim(id)
   }
 
   @Get()
@@ -61,29 +78,32 @@ export class CampanhasController {
     return this.arrecadacaoService.arrecadacoesPorCampanha(+id)
   }
 
-  @Get(':idCampanha/estatisticas')
+  @Get(':idCampanha/resumo')
   @ApiOperation({
-    summary: 'Busca a quantidade total de alimentos arrecadados na campanha, por categoria de alimento',
-    description: 'Retorna o nome das categorias seguido da quantidade total arrecadada, em kg ou L',
+    summary:
+      'Busca a quantidade total de arrecadações da campanha, por categoria',
+    description:
+      'Retorna o nome das categorias seguido da quantidade total arrecadada, em kg ou L',
   })
-  async getEstatisticasGerais(@Param('idCampanha') idCampanha: number) {
-    return this.campanhasService.getEstatisticasGerais(idCampanha);
+  async getResumoByCampanhaId(@Param('idCampanha') idCampanha: number) {
+    return this.campanhasService.getResumoByCampanhaId(idCampanha)
   }
 
-  @Get(':idCampanha/estatisticas/:nomeCategoria')
+  @Get(':idCampanha/resumo/:nomeCategoria')
   @ApiOperation({
-    summary: 'Busca a quantidade e peso dos pacotes arrecadados de determinada categoria de uma campanha',
-    description: 'Retorna a quantidade de pacotes e seus respectivos pesos, de determinada categoria de uma campanha',
+    summary: 'Busca o resumo de determinada categoria de uma campanha',
+    description:
+      'Retorna a quantidade de pacotes e seus respectivos pesos, de determinada categoria de uma campanha',
   })
   async getEstatisticas(
     @Param('idCampanha') idCampanha: number,
-    @Param('nomeCategoria') nomeCategoria: string,
+    @Param('nomeCategoria') nomeCategoria: string
   ) {
-    return await this.campanhasService.getEstatisticas(idCampanha, nomeCategoria);
+    return await this.campanhasService.getEstatisticas(
+      idCampanha,
+      nomeCategoria
+    )
   }
-
-  
-
 
   // @Patch(':id')
   // @ApiOperation({
