@@ -1,10 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateCategoriaDto {
-
-  @ApiProperty({example: "Arroz"})
+  @ApiProperty({ example: 'Arroz' })
   nome_categoria: string
 
-  @ApiProperty({example: "kg"})
+  @ApiProperty({ example: 'kg' })
   medida_sigla: string
 }
