@@ -1,6 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { CreateMarcaDto } from './dto/create-marca.dto'
-import { UpdateMarcaDto } from './dto/update-marca.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MarcasNew } from './entities/marca.entity'
 import { Repository } from 'typeorm'
@@ -13,7 +12,7 @@ export class MarcasService {
   ) {}
 
   async findAll(): Promise<MarcasNew[]> {
-    return await this.marcaRepository.find({ take: 20 })
+    return await this.marcaRepository.find()
   }
 
   async create(createMarcaDto: CreateMarcaDto): Promise<MarcasNew> {
@@ -24,12 +23,4 @@ export class MarcasService {
   async findMarcaByName(nome: string) {
     return await this.marcaRepository.findOneBy({ nome })
   }
-
-  // update(id: number, updateMarcaDto: UpdateMarcaDto) {
-  //   return `This action updates a #${id} marca`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} marca`;
-  // }
 }
