@@ -9,7 +9,12 @@ import { ProdutosNew } from 'src/produtos/entities/produto.entity'
 import { Categorias } from 'src/categorias/entities/categorias.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Campanhas]), TypeOrmModule.forFeature([Arrecadacao]), TypeOrmModule.forFeature([ProdutosNew]), TypeOrmModule.forFeature([Categorias])],
+  imports: [
+    TypeOrmModule.forFeature([Campanhas]),
+    TypeOrmModule.forFeature([Arrecadacao]),
+    TypeOrmModule.forFeature([ProdutosNew]),
+    TypeOrmModule.forFeature([Categorias]),
+  ],
   controllers: [CampanhasController],
   providers: [CampanhasService, ArrecadacaoService],
 })

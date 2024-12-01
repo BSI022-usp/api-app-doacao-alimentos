@@ -5,13 +5,12 @@ import {
 } from '@nestjs/common'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Campanhas } from './entities/campanhas.entity'
-import { In, Repository } from 'typeorm'
+import { In, Not, Repository } from 'typeorm'
 import { IsNull } from 'typeorm'
-import { Arrecadacao } from 'src/arrecadacao/entities/arrecadacao.entity'
-import { ProdutosNew } from 'src/produtos/entities/produto.entity'
-import { Categorias } from 'src/categorias/entities/categorias.entity'
-import { ArrecadacaoService } from 'src/arrecadacao/arrecadacao.service'
+import { Campanhas } from './entities/campanhas.entity'
+import { Arrecadacao } from './../arrecadacao/entities/arrecadacao.entity'
+import { ProdutosNew } from './../produtos/entities/produto.entity'
+import { Categorias } from './../categorias/entities/categorias.entity'
 
 @Injectable()
 export class CampanhasService {
@@ -23,8 +22,7 @@ export class CampanhasService {
     @InjectRepository(Arrecadacao)
     private readonly arrecadacaoRepository: Repository<Arrecadacao>,
     @InjectRepository(ProdutosNew)
-    private readonly produtoRepository: Repository<ProdutosNew>,
-    private readonly arrecadacaoService: ArrecadacaoService
+    private readonly produtoRepository: Repository<ProdutosNew>
   ) {}
 
   async create(createCampanhaDto: CreateCampanhaDto): Promise<Campanhas> {
@@ -134,6 +132,96 @@ export class CampanhasService {
     }
   }
 
+  async getArrecadacoesComProdutos(idCampanha: number) {
+    const arrecadacaoByCampanha = await this.arrecadacaoRepository.find({
+      where: { id_campanha: idCampanha },
+    })
+
+    // Busca informações dos produtos associados às arrecadações
+    const getProductInfoFromArrecadacao = await Promise.all(
+      arrecadacaoByCampanha.map(async (arrecadacao) => {
+        try {
+          const produto = await this.produtoRepository.findOne({
+            where: { gtin: arrecadacao.id_produto },
+          })
+          return { ...arrecadacao, produto }
+        } catch (error) {
+          console.error(
+            'Erro ao buscar produto:',
+            arrecadacao.id_produto,
+            error
+          )
+          return { ...arrecadacao, produto: {} }
+        }
+      })
+    )
+
+    return getProductInfoFromArrecadacao
+  }
+
+  async getCollectionByCampaignId(idCampanha: number) {
+    const getProductInfoFromArrecadacao =
+      await this.getArrecadacoesComProdutos(idCampanha)
+
+    const arrecadacoesDaCampanha = getProductInfoFromArrecadacao.map(
+      (arrecadacao) => ({
+        id_produto: arrecadacao.id_produto,
+        qtd_total: arrecadacao.qtd_total,
+        produto: arrecadacao.produto,
+      })
+    )
+    return {
+      id_campanha: idCampanha,
+      arrecadacoes: arrecadacoesDaCampanha,
+    }
+  }
+
+  async getCollectionFromAllCategoriesByCampaignId(idCampanha: number) {
+    const categorias = await this.categoriaRepository.find()
+    const mappedCategorias = categorias.reduce((acc, categoria) => {
+      acc[categoria.nome_categoria] = categoria.medida_sigla
+      return acc
+    }, {})
+
+    const getProductInfoFromArrecadacao =
+      await this.getArrecadacoesComProdutos(idCampanha)
+
+    // aqui apenas calcula o total de pacotes e peso por categoria
+    const relatorioCategorias = Object.entries(
+      getProductInfoFromArrecadacao.reduce(
+        (categoryAccumulator, arrecadacao) => {
+          const categoria =
+            (arrecadacao.produto as ProdutosNew)?.id_produto_categoria ||
+            'Sem categoria'
+          const medida = mappedCategorias[categoria] || 'Sem medida'
+          const totalPeso =
+            (arrecadacao.qtd_total || 1) *
+            ((arrecadacao.produto as ProdutosNew)?.medida_por_embalagem || 1)
+
+          if (!categoryAccumulator[categoria]) {
+            categoryAccumulator[categoria] = {
+              categoria,
+              qtd_total: 0,
+              peso_total: 0,
+              medida,
+            }
+          }
+
+          categoryAccumulator[categoria].qtd_total += arrecadacao.qtd_total || 0
+          categoryAccumulator[categoria].peso_total += totalPeso
+
+          return categoryAccumulator
+        },
+        {}
+      )
+    ).map(([, categoriaData]) => categoriaData)
+
+    return {
+      id_campanha: idCampanha,
+      relatorio_categorias: relatorioCategorias,
+    }
+  }
+
   async getResumoByCampanhaId(idCampanha: number) {
     // Buscar todas as categorias
     const categorias = await this.categoriaRepository.find()
@@ -186,5 +274,33 @@ export class CampanhasService {
       },
     })
     return campanhasInProgress
+  }
+
+  async findAllCampaignsAndReportByCategory() {
+    const campanhas: Campanhas[] | [] =
+      (await this.campanhaRepository.find({
+        where: {
+          data_fim: Not(IsNull()),
+        },
+        order: {
+          id: 'DESC',
+        },
+      })) || []
+
+    const campanhasEstatisticasByCategory = await Promise.all(
+      campanhas.map(async (campanha) => {
+        const resumoCampanha = await this.getResumoByCampanhaId(campanha.id)
+        const result = {
+          id_campanha: campanha.id,
+          label: campanha.label,
+          data_inicio: campanha.data_inicio,
+          data_fim: campanha.data_fim,
+          resumo: resumoCampanha.categorias,
+        }
+        return result
+      })
+    )
+
+    return campanhasEstatisticasByCategory
   }
 }

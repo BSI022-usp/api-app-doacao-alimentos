@@ -20,6 +20,29 @@ export class CampanhasController {
     private readonly arrecadacaoService: ArrecadacaoService
   ) {}
 
+  @Get(':idCampanha/resumo')
+  @ApiOperation({
+    summary: 'Busca arrecadações agrupadas por categoria de uma campanha',
+    description:
+      'Retorna relatório de arrecadações agrupados por categoria de uma campanha específica com base no ID fornecido.',
+  })
+  async testeNovoEndpoint(@Param('idCampanha') idCampanha: number) {
+    return await this.campanhasService.getCollectionFromAllCategoriesByCampaignId(
+      idCampanha
+    )
+  }
+
+  @Get(':idCampanha/collection')
+  @ApiOperation({
+    summary: 'Busca arrecadações e produtos de uma campanha específica',
+    description:
+      'Retorna todas as arrecadações e produtos de uma campanha específica com base no ID fornecido.',
+  })
+  async getCollectionByCampaignId(@Param('idCampanha') idCampanha: number) {
+    return this.campanhasService.getCollectionByCampaignId(idCampanha)
+  }
+  // @Param('idCampanha') idCampanha: number,
+  //     @Param('nomeCategoria') nomeCategoria: string
   @Post('')
   @ApiOperation({
     summary: 'Cria uma nova campanha',
@@ -79,16 +102,16 @@ export class CampanhasController {
     return this.arrecadacaoService.arrecadacoesPorCampanha(+id)
   }
 
-  @Get(':idCampanha/resumo')
-  @ApiOperation({
-    summary:
-      'Busca a quantidade total de arrecadações da campanha, por categoria',
-    description:
-      'Retorna o nome das categorias seguido da quantidade total arrecadada, em kg ou L',
-  })
-  async getResumoByCampanhaId(@Param('idCampanha') idCampanha: number) {
-    return this.campanhasService.getResumoByCampanhaId(idCampanha)
-  }
+  //   @Get(':idCampanha/resumo')
+  //   @ApiOperation({
+  //     summary:
+  //       'Busca a quantidade total de arrecadações da campanha, por categoria',
+  //     description:
+  //       'Retorna o nome das categorias seguido da quantidade total arrecadada, em kg ou L',
+  //   })
+  //   async getResumoByCampanhaId(@Param('idCampanha') idCampanha: number) {
+  //     return this.campanhasService.getResumoByCampanhaId(idCampanha)
+  //   }
 
   @Get(':idCampanha/resumo/:nomeCategoria')
   @ApiOperation({
