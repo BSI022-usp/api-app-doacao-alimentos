@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { CategoriasService } from './categorias.service'
 import { CreateCategoriaDto } from './dto/create-categoria.dto'
-import { UpdateCategoriaDto } from './dto/update-categoria.dto'
+// import { UpdateCategoriaDto } from './dto/update-categoria.dto'
 import { ApiOperation } from '@nestjs/swagger'
 
 @Controller('categorias')
@@ -52,11 +52,8 @@ export class CategoriasController {
     description:
       'Modifica as informações de uma categoria existente com base no ID fornecido.',
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateCategoriaDto: UpdateCategoriaDto
-  ) {
-    return this.categoriasService.update(+id, updateCategoriaDto)
+  update(@Param('id') id: string) {
+    return this.categoriasService.update(+id)
   }
 
   @Delete(':id')
