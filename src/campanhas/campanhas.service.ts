@@ -133,27 +133,35 @@ export class CampanhasService {
   }
 
   async getArrecadacoesComProdutos(idCampanha: number) {
-    const arrecadacaoByCampanha = await this.arrecadacaoRepository.find({
-      where: { id_campanha: idCampanha },
-    })
+    const arrecadacaoByCampanha =
+      (await this.arrecadacaoRepository.find({
+        where: { id_campanha: idCampanha },
+      })) || []
 
-    // Busca informações dos produtos associados às arrecadações
-    const getProductInfoFromArrecadacao = await Promise.all(
-      arrecadacaoByCampanha.map(async (arrecadacao) => {
-        try {
-          const produto = await this.produtoRepository.findOne({
-            where: { gtin: arrecadacao.id_produto },
-          })
-          return { ...arrecadacao, produto }
-        } catch (error) {
-          console.error(
-            'Erro ao buscar produto:',
-            arrecadacao.id_produto,
-            error
-          )
-          return { ...arrecadacao, produto: {} }
-        }
-      })
+    const arrecadacaoIds = arrecadacaoByCampanha.map(
+      (arrecadacao) => arrecadacao.id_produto
+    )
+
+    const produtos =
+      (await this.produtoRepository.find({
+        where: {
+          gtin: In(arrecadacaoIds),
+        },
+      })) || []
+
+    const produtosMap = produtos.reduce(
+      (map, produto) => {
+        map[produto.gtin] = produto
+        return map
+      },
+      {} as Record<string, any>
+    )
+
+    const getProductInfoFromArrecadacao = arrecadacaoByCampanha.map(
+      (arrecadacao) => {
+        const produto = produtosMap[arrecadacao.id_produto] || {}
+        return { ...arrecadacao, produto }
+      }
     )
 
     return getProductInfoFromArrecadacao

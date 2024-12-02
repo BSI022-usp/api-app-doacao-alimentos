@@ -20,13 +20,20 @@ export class CampanhasController {
     private readonly arrecadacaoService: ArrecadacaoService
   ) {}
 
+  @Get(':idCampanha/collection-categories')
+  async getArrecadacoesComProdutos(@Param('idCampanha') idCampanha: number) {
+    return await this.campanhasService.getArrecadacoesComProdutos(idCampanha)
+  }
+
   @Get(':idCampanha/resumo')
   @ApiOperation({
     summary: 'Busca arrecadações agrupadas por categoria de uma campanha',
     description:
-      'Retorna relatório de arrecadações agrupados por categoria de uma campanha específica com base no ID fornecido.',
+      'Retorna relatório de arrecadações agrupados por categoria e quantidade arrecada em num. de embalagens e peso total.',
   })
-  async testeNovoEndpoint(@Param('idCampanha') idCampanha: number) {
+  async getCollectionCategoriesByCampaignId(
+    @Param('idCampanha') idCampanha: number
+  ) {
     return await this.campanhasService.getCollectionFromAllCategoriesByCampaignId(
       idCampanha
     )

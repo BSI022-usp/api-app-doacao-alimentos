@@ -2,11 +2,11 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { CampanhasService } from './campanhas.service'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
 import { Campanhas } from './entities/campanhas.entity'
-// import { Repository } from 'typeorm'
 import { Categorias } from './../categorias/entities/categorias.entity'
 import { Arrecadacao } from './../arrecadacao/entities/arrecadacao.entity'
 import { ProdutosNew } from './../produtos/entities/produto.entity'
 import { Test } from '@nestjs/testing'
+import { Repository } from 'typeorm'
 
 describe('CampanhasService', () => {
   const mockRepository = {
@@ -18,25 +18,27 @@ describe('CampanhasService', () => {
   }
 
   let service: CampanhasService
-  //   let mockCategoriaRepository: Repository<Categorias>
-  //   let mockCampanhaRepository: Repository<Campanhas>
-  //   let mockArrecadacaoRepository: Repository<Arrecadacao>
-  //   let mockProdutoRepository: Repository<ProdutosNew>
+  let arrecadacaoRepository: jest.Mocked<Repository<Arrecadacao>>
+  let produtoRepository: jest.Mocked<Repository<ProdutosNew>>
+  let categoriaRepository: jest.Mocked<Repository<Categorias>>
 
   beforeEach(async () => {
-    // const mockCategoriaRepository =
-    //   mockRepository as unknown as Repository<Categorias>
-    // const mockCampanhaRepository = mockRepository as unknown as Repository<Campanhas>
-    // const mockArrecadacaoRepository =
-    //   mockRepository as unknown as Repository<Arrecadacao>
-    // const mockProdutoRepository = mockRepository as unknown as Repository<ProdutosNew>
+    arrecadacaoRepository = {
+      find: jest.fn(),
+    } as unknown as jest.Mocked<Repository<Arrecadacao>>
+    produtoRepository = {
+      find: jest.fn(),
+    } as unknown as jest.Mocked<Repository<ProdutosNew>>
+    categoriaRepository = {
+      find: jest.fn(),
+    } as unknown as jest.Mocked<Repository<Categorias>>
 
     const module = await Test.createTestingModule({
       providers: [
         CampanhasService,
         {
           provide: getRepositoryToken(Categorias),
-          useValue: mockRepository,
+          useValue: categoriaRepository,
         },
         {
           provide: getRepositoryToken(Campanhas),
@@ -44,21 +46,40 @@ describe('CampanhasService', () => {
         },
         {
           provide: getRepositoryToken(Arrecadacao),
-          useValue: mockRepository,
+          useValue: arrecadacaoRepository,
         },
         {
           provide: getRepositoryToken(ProdutosNew),
-          useValue: mockRepository,
+          useValue: produtoRepository,
         },
       ],
     }).compile()
 
     service = module.get<CampanhasService>(CampanhasService)
-    // mockCampanhaRepository = module.get(getRepositoryToken(Campanhas))
-    // mockCategoriaRepository = module.get(getRepositoryToken(Categorias))
-    // mockArrecadacaoRepository = module.get(getRepositoryToken(Arrecadacao))
-    // mockProdutoRepository = module.get(getRepositoryToken(ProdutosNew))
   })
+
+  const mockArrecadacoesComProdutos = {
+    id_campanha: 1,
+    campanha: {
+      id: 1,
+      label: 'Campanha Teste',
+      data_inicio: new Date('2024-11-01'),
+      data_fim: new Date('2024-12-31'),
+      arrecadacao: [],
+    },
+    id_produto: '123',
+    qtd_total: 10,
+    produto: {
+      gtin: '123',
+      codigo_ncm: '07133399',
+      id_produto_categoria: 'Feijao',
+      medida_por_embalagem: 1,
+      nome: 'Feijao Teste Integração',
+      nome_sem_acento: 'Feijao Teste Integracao',
+      produto_marca: 'NÃO INFORMADO',
+      produto_medida_sigla: null,
+    },
+  }
 
   it('should be defined', () => {
     expect(service).toBeDefined()
@@ -83,6 +104,125 @@ describe('CampanhasService', () => {
     expect(result).toEqual(campanhaCriadaMock)
     expect(mockRepository.create).toHaveBeenCalledWith(createCampanhaDto)
     expect(mockRepository.save).toHaveBeenCalledWith(campanhaCriadaMock)
+  })
+
+  it('getArrecadacoesComProdutos - should return an array of arrecadacoes with products', async () => {
+    const idCampanha = 1
+
+    const arrecadacaoMock = [
+      { id_campanha: 1, id_produto: '123', qtd_total: 10 } as Arrecadacao,
+    ]
+
+    const produtoMock = {
+      gtin: '123',
+      codigo_ncm: '07133399',
+      id_produto_categoria: 'Feijao',
+      medida_por_embalagem: 1,
+      nome: 'Feijao Teste Integração',
+      nome_sem_acento: 'Feijao Teste Integracao',
+      produto_marca: 'NÃO INFORMADO',
+      produto_medida_sigla: null,
+    } as ProdutosNew
+
+    const expectedResult = [
+      {
+        id_campanha: 1,
+        id_produto: '123',
+        qtd_total: 10,
+        produto: {
+          gtin: '123',
+          codigo_ncm: '07133399',
+          id_produto_categoria: 'Feijao',
+          medida_por_embalagem: 1,
+          nome: 'Feijao Teste Integração',
+          nome_sem_acento: 'Feijao Teste Integracao',
+          produto_marca: 'NÃO INFORMADO',
+          produto_medida_sigla: null,
+        },
+      },
+    ]
+
+    arrecadacaoRepository.find.mockResolvedValue(arrecadacaoMock)
+    produtoRepository.find.mockResolvedValue([produtoMock])
+
+    const arrecadacoes = await service.getArrecadacoesComProdutos(idCampanha)
+
+    expect(arrecadacaoRepository.find).toHaveBeenCalledTimes(1)
+    expect(arrecadacaoRepository.find).toHaveBeenCalledTimes(1)
+    expect(arrecadacoes).toEqual(expectedResult)
+  })
+
+  it('getCollectionByCampaignId - should return an object with the campaign id and arrecadacoes', async () => {
+    const idCampanha = 1
+
+    const expectedResult = {
+      id_campanha: 1,
+      arrecadacoes: [
+        {
+          id_produto: '123',
+          qtd_total: 10,
+          produto: {
+            gtin: '123',
+            codigo_ncm: '07133399',
+            id_produto_categoria: 'Feijao',
+            medida_por_embalagem: 1,
+            nome: 'Feijao Teste Integração',
+            nome_sem_acento: 'Feijao Teste Integracao',
+            produto_marca: 'NÃO INFORMADO',
+            produto_medida_sigla: null,
+          },
+        },
+      ],
+    }
+
+    jest
+      .spyOn(service, 'getArrecadacoesComProdutos')
+      .mockResolvedValue([mockArrecadacoesComProdutos])
+
+    const arrecadacoes = await service.getCollectionByCampaignId(idCampanha)
+
+    expect(service.getArrecadacoesComProdutos).toHaveBeenCalledTimes(1)
+    expect(service.getArrecadacoesComProdutos).toHaveBeenCalledWith(idCampanha)
+
+    expect(arrecadacoes).toEqual(expectedResult)
+  })
+
+  it('getCollectionFromAllCategoriesByCampaignId - should return an object with the campaign id and arrecadacoes grouped by category', async () => {
+    const idCampanha = 1
+
+    const mockCategorias = [
+      {
+        nome_categoria: 'Feijao',
+        medida_sigla: 'kg',
+      },
+    ]
+
+    const expectedResult = {
+      id_campanha: idCampanha,
+      relatorio_categorias: [
+        {
+          categoria: 'Feijao',
+          qtd_total: 10,
+          peso_total: 10,
+          medida: 'kg',
+        },
+      ],
+    }
+
+    jest
+      .spyOn(service, 'getArrecadacoesComProdutos')
+      .mockResolvedValue([mockArrecadacoesComProdutos])
+    categoriaRepository.find.mockResolvedValue(mockCategorias)
+
+    const arrecadacoes =
+      await service.getCollectionFromAllCategoriesByCampaignId(idCampanha)
+
+    console.log('arrecadacoes', arrecadacoes)
+
+    // expect(service['categoriaRepository'].find).toHaveBeenCalledTimes(1)
+    expect(service.getArrecadacoesComProdutos).toHaveBeenCalledWith(idCampanha)
+    expect(arrecadacoes).toEqual(expectedResult)
+    expect(service.getArrecadacoesComProdutos).toHaveBeenCalledTimes(1)
   })
 
   //   it('FindAll - should return an array of campaigns', async () => {
