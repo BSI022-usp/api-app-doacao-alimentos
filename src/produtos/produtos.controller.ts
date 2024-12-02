@@ -5,10 +5,10 @@ import {
   NotFoundException,
   Param,
   Post,
-} from '@nestjs/common';
-import { ProdutosService } from './produtos.service';
-import { CreateProdutoDto } from './dto/create-produto.dto';
-import { ApiOperation } from '@nestjs/swagger';
+} from '@nestjs/common'
+import { ProdutosService } from './produtos.service'
+import { CreateProdutoDto } from './dto/create-produto.dto'
+import { ApiOperation } from '@nestjs/swagger'
 
 @Controller('produtos')
 export class ProdutosController {
@@ -16,7 +16,7 @@ export class ProdutosController {
 
   @Post()
   create(@Body() createProdutoDto: CreateProdutoDto) {
-    return this.produtosService.createOrUpdate(createProdutoDto);
+    return this.produtosService.createOrUpdate(createProdutoDto)
   }
 
   @Get()
@@ -26,20 +26,20 @@ export class ProdutosController {
       'Retorna uma lista completa com todos os produtos cadastrados no sistema.',
   })
   findAllProducts() {
-    return this.produtosService.findAllProducts();
+    return this.produtosService.findAllProducts()
   }
 
   @Get(':gtin')
   @ApiOperation({
-    summary: 'Busca um produto pelo GTIN',
+    summary: 'Busca um produto pelo GTIN(código de barras)',
     description:
       'Procura e retorna os detalhes de um produto específico com base no GTIN (Global Trade Item Number) fornecido como parâmetro.',
   })
   async findOne(@Param('gtin') gtin: string) {
-    const response = await this.produtosService.findProdutoByCode(gtin);
+    const response = await this.produtosService.findProdutoByCode(gtin)
 
-    if (!response) throw new NotFoundException('Produto não encontrado');
-    else return response;
+    if (!response) throw new NotFoundException('Produto não encontrado')
+    else return response
   }
 
   @Get('/categorias/:category')
@@ -49,7 +49,7 @@ export class ProdutosController {
       'Retorna uma lista de produtos que pertencem à categoria especificada no parâmetro.',
   })
   findByCategory(@Param('category') category: string) {
-    return this.produtosService.findProductsByCategory(category);
+    return this.produtosService.findProductsByCategory(category)
   }
 
   // @Patch(':id')

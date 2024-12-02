@@ -1,0 +1,54 @@
+test
+
+
+
+
+
+
+
+
+
+
+
+@Get(':idCampanha/estatisticas')
+
+{
+    "idCampanha": 1,
+    "categorias":[{
+        "nome": "Feijao",
+        "qtd_total_pacotes": 120,
+        "qtd_total_peso": 390,
+        "medida": "kg"
+    },
+    {
+        "nome": "Arroz",
+        "qtd_total_pacotes": 50,
+        "qtd_total_peso": 250,
+        "medida": "kg"
+    }
+    ]      
+}
+
+
+@Get(':idCampanha/estatisticas/:nomeCategoria')
+{
+    "idCampanha": 1,
+    "nomeCategoria": "Feijao",
+    "medida": "kg",
+    "arrecadados": [{
+        "peso": 5,
+        "qtd_pacotes": 50
+        
+    },
+    {
+        "peso": 2,
+        "qtd_pacotes": 70
+    }]
+}
+
+pegar arrecadacoes de uma campanha
+
+na tabela PRODUTOS, onde id_produto_categoria for a mesma que a categoria solicitada
+pegar medida_por_embalagem (que seria o peso),
+criar um objeto em arrecadados com esse peso, e somar na qtd_pacotes a qtd_total arrecadada daquele produto que é retornada no endpoint de arrecadacoes de uma campanha
+

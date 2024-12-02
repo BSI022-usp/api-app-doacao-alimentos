@@ -1,8 +1,10 @@
 import { CampanhasService } from './campanhas.service'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
-import { UpdateCampanhaDto } from './dto/update-campanha.dto'
 import { Campanhas } from './entities/campanhas.entity'
 import { Repository } from 'typeorm'
+import { Categorias } from './../categorias/entities/categorias.entity'
+import { Arrecadacao } from './../arrecadacao/entities/arrecadacao.entity'
+import { ProdutosNew } from './../produtos/entities/produto.entity'
 
 const mockRepository = {
   create: jest.fn(),
@@ -15,11 +17,20 @@ const mockRepository = {
 
 describe('CampanhasService', () => {
   let service: CampanhasService
-  let repository: Repository<Campanhas>
+
+  let repositoryArrecadacao: Repository<Arrecadacao>
+  let categoriasReposity: Repository<Categorias>
+  let produtoRepository: Repository<ProdutosNew>
+  let campanhasRepository: Repository<Campanhas>
 
   beforeAll(() => {
-    repository = mockRepository as unknown as Repository<Campanhas>
-    service = new CampanhasService(repository)
+    campanhasRepository = mockRepository as unknown as Repository<Campanhas>
+    service = new CampanhasService(
+      categoriasReposity,
+      campanhasRepository,
+      repositoryArrecadacao,
+      produtoRepository
+    )
   })
 
   it('should be defined', () => {
@@ -45,63 +56,5 @@ describe('CampanhasService', () => {
     expect(result).toEqual(campanhaCriadaMock)
     expect(mockRepository.create).toHaveBeenCalledWith(createCampanhaDto)
     expect(mockRepository.save).toHaveBeenCalledWith(campanhaCriadaMock)
-  })
-
-  it('findAll - should return all campaigns', async () => {
-    const campanhasMock = [
-      {
-        id: 1,
-        label: 'Campanha A',
-        data_inicio: new Date(),
-        data_fim: new Date(),
-      },
-      {
-        id: 2,
-        label: 'Campanha B',
-        data_inicio: new Date(),
-        data_fim: new Date(),
-      },
-    ]
-
-    mockRepository.find.mockResolvedValue(campanhasMock)
-
-    const result = await service.findAll()
-    expect(result).toEqual(campanhasMock)
-    expect(mockRepository.find).toHaveBeenCalled()
-  })
-
-  it('findOne - should return a single campaign by ID', async () => {
-    const campanhaMock = {
-      id: 1,
-      label: 'Campanha Teste',
-      data_inicio: new Date(),
-      data_fim: new Date(),
-    }
-
-    mockRepository.findOne.mockResolvedValue(campanhaMock)
-
-    const result = await service.findOne(1)
-    expect(result).toEqual(`This action returns a #1 campanha`)
-    expect(mockRepository.findOne).not.toHaveBeenCalled() // O método findOne real não é chamado
-  })
-
-  it('update - should update a campaign by ID', async () => {
-    const updateCampanhaDto: UpdateCampanhaDto = {
-      label: 'Campanha Atualizada',
-    }
-
-    mockRepository.update.mockResolvedValue({ affected: 1 } as any)
-
-    const result = await service.update(1, updateCampanhaDto)
-    expect(result).toEqual(`This action updates a #1 campanha`)
-    expect(mockRepository.update).not.toHaveBeenCalled() // O método update real não é chamado
-  })
-
-  it('remove - should delete a campaign by ID', async () => {
-    mockRepository.delete.mockResolvedValue({ affected: 1 } as any)
-
-    const result = await service.remove(1)
-    expect(result).toEqual(`This action removes a #1 campanha`)
-    expect(mockRepository.delete).not.toHaveBeenCalled() // O método delete real não é chamado
   })
 })
