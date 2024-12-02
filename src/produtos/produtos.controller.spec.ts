@@ -2,8 +2,15 @@ import { ProdutosController } from './produtos.controller'
 import { ProdutosService } from './produtos.service'
 import { Repository } from 'typeorm'
 import { ProdutosNew } from './entities/produto.entity'
+import { ProdutosController } from './produtos.controller'
+import { ProdutosService } from './produtos.service'
+import { Repository } from 'typeorm'
+import { ProdutosNew } from './entities/produto.entity'
 
 describe('ProdutosController', () => {
+  let controller: ProdutosController
+  let service: ProdutosService
+  let repository: Repository<ProdutosNew>
   let controller: ProdutosController
   let service: ProdutosService
   let repository: Repository<ProdutosNew>
@@ -82,5 +89,18 @@ describe('ProdutosController', () => {
 
     const result = await controller.create(produtoMock)
     expect(result).toEqual(produtoMock)
+  })
+
+  it('find products by gtin - should return all products filter by gtin', async () => {
+    const produtosMock: ProdutosNew = {
+      id: 1,
+      nome: 'Produto 1',
+      id_produto_categoria: 'teste',
+    } as unknown as ProdutosNew
+
+    jest.spyOn(service, 'findProdutoByCode').mockResolvedValue(produtosMock)
+
+    const result = await controller.findOne('teste')
+    expect(result).toEqual(produtosMock)
   })
 })
