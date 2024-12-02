@@ -20,10 +20,12 @@ const mockRepository = {
 
 describe('CategoriasService', () => {
   let service: CategoriasService
-  const mockRepository = {
-    find: jest.fn(),
-    save: jest.fn(),
-  }
+  let repository: Repository<Categorias>
+
+  beforeAll(() => {
+    repository = mockRepository as unknown as Repository<Categorias>
+    service = new CategoriasService(repository)
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -103,9 +105,11 @@ describe('CategoriasService', () => {
   it('update - should update a categoria', async () => {
     const updateCategoriaDto = { nome_categoria: 'Leite', medida_sigla: 'L' }
 
-    jest.spyOn(repository, 'update').mockResolvedValue({ affected: 1 } as any)
+    jest
+      .spyOn(repository, 'update')
+      .mockResolvedValue(updateCategoriaDto as any)
 
-    const result = await service.update(1, updateCategoriaDto)
+    const result = await service.update(1)
     expect(result).toEqual('This action updates a #1 categoria')
   })
 
@@ -138,16 +142,17 @@ describe('CategoriasService', () => {
   it('update - should update a categoria', async () => {
     const updateCategoriaDto = { nome_categoria: 'Leite', medida_sigla: 'L' }
 
-    jest.spyOn(repository, 'update').mockResolvedValue({ affected: 1 } as any)
-
-    const result = await service.update(1, updateCategoriaDto)
+    jest
+      .spyOn(repository, 'update')
+      .mockResolvedValue(updateCategoriaDto as any)
+    const result = await service.update(1)
     expect(result).toEqual('This action updates a #1 categoria')
   })
 
   it('remove - should delete a categoria by ID', async () => {
     jest.spyOn(repository, 'delete').mockResolvedValue({ affected: 1 } as any)
 
-    const result = await service.remove(1)
+    const result = service.remove(1)
     expect(result).toEqual('This action removes a #1 categoria')
   })
 })
