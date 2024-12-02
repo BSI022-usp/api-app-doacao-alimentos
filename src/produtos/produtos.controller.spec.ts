@@ -2,15 +2,8 @@ import { ProdutosController } from './produtos.controller'
 import { ProdutosService } from './produtos.service'
 import { Repository } from 'typeorm'
 import { ProdutosNew } from './entities/produto.entity'
-import { ProdutosController } from './produtos.controller'
-import { ProdutosService } from './produtos.service'
-import { Repository } from 'typeorm'
-import { ProdutosNew } from './entities/produto.entity'
 
 describe('ProdutosController', () => {
-  let controller: ProdutosController
-  let service: ProdutosService
-  let repository: Repository<ProdutosNew>
   let controller: ProdutosController
   let service: ProdutosService
   let repository: Repository<ProdutosNew>

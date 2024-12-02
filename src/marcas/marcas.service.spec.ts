@@ -33,7 +33,7 @@ describe('MarcasService', () => {
 
     const result = await service.findAll()
     expect(result).toEqual(marcasMock)
-    expect(repository.find).toHaveBeenCalledWith({ take: 20 })
+    expect(repository.find).toHaveBeenCalledWith()
   })
 
   it('create - should save a new brand in the database', async () => {

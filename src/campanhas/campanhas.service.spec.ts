@@ -2,11 +2,9 @@ import { CampanhasService } from './campanhas.service'
 import { CreateCampanhaDto } from './dto/create-campanha.dto'
 import { Campanhas } from './entities/campanhas.entity'
 import { Repository } from 'typeorm'
-import { UpdateCampanhaDto } from './dto/update-campanha.dto'
 import { Categorias } from './../categorias/entities/categorias.entity'
 import { Arrecadacao } from './../arrecadacao/entities/arrecadacao.entity'
 import { ProdutosNew } from './../produtos/entities/produto.entity'
-import { Test } from '@nestjs/testing'
 
 const mockRepository = {
   create: jest.fn(),
@@ -19,11 +17,20 @@ const mockRepository = {
 
 describe('CampanhasService', () => {
   let service: CampanhasService
-  let repository: Repository<Campanhas>
+
+  let repositoryArrecadacao: Repository<Arrecadacao>
+  let categoriasReposity: Repository<Categorias>
+  let produtoRepository: Repository<ProdutosNew>
+  let campanhasRepository: Repository<Campanhas>
 
   beforeAll(() => {
-    repository = mockRepository as unknown as Repository<Campanhas>
-    service = new CampanhasService(repository)
+    campanhasRepository = mockRepository as unknown as Repository<Campanhas>
+    service = new CampanhasService(
+      categoriasReposity,
+      campanhasRepository,
+      repositoryArrecadacao,
+      produtoRepository
+    )
   })
 
   it('should be defined', () => {
