@@ -55,6 +55,30 @@ export class CampanhasController {
     return this.arrecadacaoService.arrecadacoesPorCampanha(+id);
   }
 
+  @Get(':idCampanha/estatisticas')
+  @ApiOperation({
+    summary: 'Busca a quantidade total de alimentos arrecadados na campanha, por categoria de alimento',
+    description: 'Retorna o nome das categorias seguido da quantidade total arrecadada, em kg ou L',
+  })
+  async getEstatisticasGerais(@Param('idCampanha') idCampanha: number) {
+    return this.campanhasService.getEstatisticasGerais(idCampanha);
+  }
+
+  @Get(':idCampanha/estatisticas/:nomeCategoria')
+  @ApiOperation({
+    summary: 'Busca a quantidade e peso dos pacotes arrecadados de determinada categoria de uma campanha',
+    description: 'Retorna a quantidade de pacotes e seus respectivos pesos, de determinada categoria de uma campanha',
+  })
+  async getEstatisticas(
+    @Param('idCampanha') idCampanha: number,
+    @Param('nomeCategoria') nomeCategoria: string,
+  ) {
+    return await this.campanhasService.getEstatisticas(idCampanha, nomeCategoria);
+  }
+
+  
+
+
   // @Patch(':id')
   // @ApiOperation({
   //   summary: 'Atualiza os dados de uma campanha',
