@@ -4,10 +4,10 @@ import { UpdateCampanhaDto } from './dto/update-campanha.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Campanhas } from './entities/campanhas.entity';
 import { In, Repository } from 'typeorm';
-import { Arrecadacao } from 'src/arrecadacao/entities/arrecadacao.entity';
-import { ProdutosNew } from 'src/produtos/entities/produto.entity';
-import { Categorias } from 'src/categorias/entities/categorias.entity';
-import { ArrecadacaoService } from 'src/arrecadacao/arrecadacao.service';
+import { Arrecadacao } from '../arrecadacao/entities/arrecadacao.entity';
+import { ProdutosNew } from '../produtos/entities/produto.entity';
+import { Categorias } from '../categorias/entities/categorias.entity';
+import { ArrecadacaoService } from '../arrecadacao/arrecadacao.service';
 
 @Injectable()
 export class CampanhasService {
