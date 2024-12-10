@@ -194,7 +194,10 @@ export class CampanhasService {
     const getProductInfoFromArrecadacao =
       await this.getArrecadacoesComProdutos(idCampanha)
 
-    // aqui apenas calcula o total de pacotes e peso por categoria
+    const getCampanhaInfo = await this.campanhaRepository.findOne({
+      where: { id: idCampanha },
+    })
+
     const relatorioCategorias = Object.entries(
       getProductInfoFromArrecadacao.reduce(
         (categoryAccumulator, arrecadacao) => {
@@ -226,8 +229,30 @@ export class CampanhasService {
 
     return {
       id_campanha: idCampanha,
+      label: getCampanhaInfo?.label,
+      data_inicio: getCampanhaInfo?.data_inicio,
+      data_fim: getCampanhaInfo?.data_fim,
       relatorio_categorias: relatorioCategorias,
     }
+  }
+
+  // nao queria duplicar a funcao acima mas é o que tem pra hoje
+  async getCollectionFromAllCategoriesCampaigns() {
+    const campanhas = await this.campanhaRepository.find()
+    const resultados = []
+
+    for (const campanha of campanhas) {
+      const relatorio = await this.getCollectionFromAllCategoriesByCampaignId(
+        campanha.id
+      )
+      resultados.push(relatorio)
+    }
+
+    const sortedResultados = resultados.sort(
+      (a, b) => b.id_campanha - a.id_campanha
+    )
+
+    return sortedResultados
   }
 
   async getResumoByCampanhaId(idCampanha: number) {

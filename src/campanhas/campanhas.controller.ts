@@ -39,6 +39,16 @@ export class CampanhasController {
     )
   }
 
+  @Get('resumo/all')
+  @ApiOperation({
+    summary: 'Busca arrecadações agrupadas por categoria de todas as campanhas',
+    description:
+      'Retorna relatório de arrecadações agrupados por categoria e quantidade arrecada em num. de embalagens e peso total.',
+  })
+  async getCollectionCategoriesFromAllCampaigns() {
+    return await this.campanhasService.getCollectionFromAllCategoriesCampaigns()
+  }
+
   @Get(':idCampanha/collection')
   @ApiOperation({
     summary: 'Busca arrecadações e produtos de uma campanha específica',
