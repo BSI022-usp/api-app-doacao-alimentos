@@ -33,7 +33,7 @@ describe('MarcasService', () => {
 
     const result = await service.findAll()
     expect(result).toEqual(marcasMock)
-    expect(repository.find).toHaveBeenCalledWith({ take: 20 })
+    expect(repository.find).toHaveBeenCalledWith()
   })
 
   it('create - should save a new brand in the database', async () => {
@@ -57,5 +57,22 @@ describe('MarcasService', () => {
     const result = await service.findMarcaByName('Marca Teste')
     expect(result).toEqual(expectedMarca)
     expect(repository.findOneBy).toHaveBeenCalledWith({ nome: 'Marca Teste' })
+  })
+
+  it('should return an array of marcas', async () => {
+    const result: MarcasNew[] = [
+      {
+        nome: 'Marca 1',
+      },
+      {
+        nome: 'Marca 2',
+      },
+    ]
+    jest
+      .spyOn(service, 'findAll')
+      .mockImplementation(() => Promise.resolve(result))
+
+    const marcas = await service.findAll()
+    expect(marcas).toBe(result)
   })
 })
